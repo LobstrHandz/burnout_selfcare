@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Моя забота о себе</title>
+<style>
+:root{--bg:#faf6f1;--card:#fff;--text:#2d2a26;--muted:#7a736b;--accent:#6b9a7e;--line:#ece4da;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1a18;--card:#262320;--text:#eee8e0;--muted:#a39b91;--accent:#7fb494;--line:#38342f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1a18;--card:#262320;--text:#eee8e0;--muted:#a39b91;--accent:#7fb494;--line:#38342f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+main{max-width:520px;margin:0 auto;padding:28px 18px 40px}
+h1{font-size:1.6rem;margin:0 0 6px;letter-spacing:.01em}
+.sub{color:var(--muted);margin:0 0 20px}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px 10px;margin-bottom:16px}
+h2{font-size:1.05rem;margin:0 0 6px;color:var(--accent)}
+.row{display:flex;align-items:center;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+label{flex:1;display:flex;align-items:center;gap:12px;padding:11px 0;cursor:pointer}
+input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:none;width:24px;height:24px;border:2px solid var(--accent);border-radius:8px;margin:0;display:grid;place-items:center;cursor:pointer;background:transparent}
+input[type=checkbox]:checked{background:var(--accent)}
+input[type=checkbox]:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+input[type=checkbox]:checked+span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+button{font:inherit;cursor:pointer}
+.del{flex:none;width:36px;height:36px;border:0;background:transparent;color:var(--muted);font-size:1.4rem;line-height:1;border-radius:10px}
+.add{border-top:1px solid var(--line);padding:8px 0 2px;display:flex;gap:8px}
+.link{border:0;background:transparent;color:var(--accent);font-weight:600;padding:6px 0}
+.txt{flex:1;min-width:0;font:inherit;font-size:16px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.ok{flex:none;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;padding:0 14px}
+.reset{width:100%;font-weight:600;padding:14px;border-radius:14px;border:0;background:var(--accent);color:#fff;margin-top:4px}
+.reset:active,.ok:active{opacity:.85}
+</style>
+</head>
+<body>
+<main>
+<h1>Моя забота о себе</h1>
+<p class="sub">Ежедневно. Необязательно делать всё. Это список того, что можно проверить и выбрать.</p>
+<div id="list"></div>
+<button class="reset" id="reset" type="button">Новый день</button>
+</main>
+<script>
+var groups=[
+{t:"Утро",i:["Проснуться и встать с кровати","Умыться, почистить зубы","Выпить воды","Позавтракать","Открыть окно или выйти на дневной свет"]},
+{t:"В течение дня",i:["Пообедать","Попить воды","Немного подвигаться или прогуляться","Сделать паузу между делами","Сделать что-нибудь приятное для себя"]},
+{t:"Вечер",i:["Поужинать","Позаботиться о гигиене","Вспомнить, что сегодня было хорошего, за что вы благодарны","Уменьшить информационную нагрузку","Подготовиться ко сну"]}
+];
+var KEY="selfcare-checks",CKEY="selfcare-custom";
+function load(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v||d}catch(e){return d}}
+function put(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+var state=load(KEY,{}),custom=load(CKEY,[]);
+if(!Array.isArray(custom))custom=[];
+var list=document.getElementById("list");
+function row(id,txt,isCustom){
+var r=document.createElement("div");r.className="row";
+var l=document.createElement("label"),c=document.createElement("input"),sp=document.createElement("span");
+c.type="checkbox";c.checked=!!state[id];sp.textContent=txt;
+c.addEventListener("change",function(){if(c.checked)state[id]=1;else delete state[id];put(KEY,state)});
+l.appendChild(c);l.appendChild(sp);r.appendChild(l);
+if(isCustom){
+var d=document.createElement("button");d.type="button";d.className="del";d.setAttribute("aria-label","Удалить пункт");d.textContent="×";
+d.addEventListener("click",function(){custom=custom.filter(function(x){return x.id!==id});delete state[id];put(CKEY,custom);put(KEY,state);render()});
+r.appendChild(d)}
+return r}
+function addBox(gi){
+var box=document.createElement("div");box.className="add";
+var b=document.createElement("button");b.type="button";b.className="link";b.textContent="+ Добавить свой пункт";
+b.addEventListener("click",function(){
+box.textContent="";
+var inp=document.createElement("input");inp.type="text";inp.className="txt";inp.maxLength=120;inp.placeholder="Например: позвонить подруге";
+var ok=document.createElement("button");ok.type="button";ok.className="ok";ok.textContent="Добавить";
+function submit(){var t=inp.value.trim();if(!t){render();return}
+custom.push({id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),g:gi,t:t});put(CKEY,custom);render()}
+ok.addEventListener("click",submit);
+inp.addEventListener("keydown",function(e){if(e.key==="Enter")submit();if(e.key==="Escape")render()});
+box.appendChild(inp);box.appendChild(ok);inp.focus()});
+box.appendChild(b);return box}
+function render(){
+list.textContent="";
+groups.forEach(function(g,gi){
+var s=document.createElement("section"),h=document.createElement("h2");h.textContent=g.t;s.appendChild(h);
+g.i.forEach(function(txt,ii){s.appendChild(row(gi+"-"+ii,txt,false))});
+custom.forEach(function(x){if(x.g===gi)s.appendChild(row(x.id,x.t,true))});
+s.appendChild(addBox(gi));list.appendChild(s)})}
+document.getElementById("reset").addEventListener("click",function(){state={};put(KEY,state);render()});
+render();
+</script>
+</body>
+</html>
