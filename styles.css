@@ -186,7 +186,7 @@ button {
   padding: 0 14px
 }
 
-.reset {
+.reset-button {
   width: 100%;
   font-weight: 600;
   padding: 14px;
@@ -197,7 +197,7 @@ button {
   margin-top: 4px
 }
 
-.reset:active,
+.reset-button:active,
 .ok-button:active {
   opacity: .85
 }
