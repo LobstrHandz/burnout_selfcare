@@ -1,7 +1,7 @@
 {
   "name": "Burnout selfcare",
   "short_name": "Selfcare",
-  "start_url": "/",
+  "start_url": "/burnout_selfcare/",
   "display": "standalone",
   "icons": [
     {
