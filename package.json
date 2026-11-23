@@ -1,0 +1,23 @@
+{
+  "name": "burnout_selfcare",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/madhatterzero/burnout_selfcare#readme",
+  "bugs": {
+    "url": "https://github.com/madhatterzero/burnout_selfcare/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madhatterzero/burnout_selfcare.git"
+  },
+  "license": "ISC",
+  "author": "madhatterzero",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "serve-dev": "http-server ./ -a localhost -p 4200"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

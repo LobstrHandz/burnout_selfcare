@@ -1,0 +1,1 @@
+This is a fork of [madhatterzero's burnout selfcare project](https://github.com/madhatterzero/burnout_selfcare)
